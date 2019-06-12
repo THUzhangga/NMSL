@@ -1,6 +1,7 @@
 #coding=utf-8
 import jieba
 import pandas as pd
+import emoji
 import pinyin
 
 
@@ -8,7 +9,53 @@ import pinyin
 def create_cut(text):
     return " ".join(jieba.cut(text, cut_all=False))
 
-def text_to_emoji(text, method=0):
+def write_html_jieba(text):
+    with open('templates/temp.html', 'w', encoding='utf-8') as temp_file:
+        with open('temp/temp2.html', 'r', encoding='utf-8') as old_html:
+                for i in old_html:
+                    temp_file.write(i)
+        for i in text:
+            if i in bible_light_raw:
+                for bl_r, bl_cx in zip(bible_light_raw, bible_light_cx):
+                    if bl_r == i:
+                        temp_file.write(emoji.emojize(':' + bl_cx + ':'))
+            else:
+                temp_file.write(i.strip())
+        temp_file.write('</body>')
+        temp_file.write('</html>')
+
+def write_html_pinyin(text):
+    with open('templates/temp.html', 'w', encoding='utf-8') as temp_file:
+        with open('temp/temp2.html', 'r', encoding='utf-8') as old_html:
+                for i in old_html:
+                    temp_file.write(i)
+        for word in text:
+            word = word.strip()
+            if word in bible_light_raw:
+                temp_file.write(emoji.emojize(':' + bible_light_dict[word] + ':'))
+            else:
+                if len(word) > 0: # if the two characters or more
+                    for character in word:
+                        if character in bible_light_dict.keys():
+                            temp_file.wrte(emoji.emojize(':' + bible_light_dict[character] + ':'))
+                            # now use pinyin
+                        else:
+                            character_py = pinyin.get(character, format="strip")
+                            if character_py in bible_deep_dict.keys():
+                                temp_file.write(emoji.emojize(':' + bible_deep_dict[character_py] + ':'))
+                            else:
+                                temp_file.write(character)
+                else: # only one character
+                    word_py = pinyin.get(word, format="strip")
+                    if word_py in bible_deep_dict.keys():
+                        temp_file.write(emoji.emojize(':' + bible_deep_dict[word_py] + ':'))
+                    else:
+                        temp_file.write(word.strip())
+        temp_file.write('</body>')
+        temp_file.write('</html>')
+
+
+def text_to_emoji(text, method=1):
     # 默认轻度抽象
     if method == 0:
         text_jieba = jieba.cut(text, cut_all=False)
@@ -32,12 +79,11 @@ def text_to_emoji(text, method=0):
         return text_with_emoji
     elif method == 1:
         text_with_emoji = ''
-        # 深度抽象
-        # 1. 分词
-        # 2. 分词检索
-        # 3. 分词拼音检索
-        # 4. 单字检索
-        # 5. 单字拼音检索
+        # 首先还是分词
+        # 分词检索
+        # 分词拼音检索
+        # 单字检索
+        # 单字拼音检索
         text_jieba = jieba.cut(text, cut_all=False)
         for word in text_jieba:
             word = word.strip()
@@ -65,7 +111,7 @@ def text_to_emoji(text, method=0):
                     else: # 只有一个汉字，前面已经检测过字和拼音都不在抽象词典中，直接加词
                         text_with_emoji += word.strip()
         return text_with_emoji
-bible_light = pd.read_excel('data/bible.xlsx')
+bible_light = pd.read_excel('data/bible_new.xlsx')
 bible_light_raw = bible_light['raw'].values
 bible_light_cx = bible_light['chouxiang'].values
 bible_light_dict = {}
@@ -78,8 +124,3 @@ for bl_r, bl_cx in zip(bible_light_raw, bible_light_cx):
     else:
         bl_r_py = bl_r
     bible_deep_dict[bl_r_py] = bl_cx
-
-
-text = '清华大学那是真的牛批'
-print(jieba.cut(text, cut_all=False))
-# print(text_to_emoji(text, method=1))

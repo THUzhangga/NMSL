@@ -1,0 +1,7 @@
+pandas
+jieba
+emoji
+pinyin
+flask
+hashlib
+lxml
