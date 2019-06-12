@@ -23,7 +23,7 @@ class  Message(object):
         self.request = req    
         self.token = 'thulecture'
         self.AppID = 'wx0f12d0d1a1f763bf'
-        self.AppSecret = 'p8FLgBNW89KtIZTvVplmJfC5CE7wiRHGXXIhlWzYIj2'
+        self.AppSecret = 'I343yWDXtxEOHLot6JVK9vnzgka52FKFEuUtAt6q4np'
 
 class Post(Message):
     def __init__(self, req):
