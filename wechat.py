@@ -4,8 +4,6 @@ from flask import Flask
 from flask import request, make_response
 
 import hashlib
-from lxml import etree
-import xml.etree.ElementTree as ET
 import time
 from nmsl_local import *
 import pickle
