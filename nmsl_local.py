@@ -1,58 +1,12 @@
 #coding=utf-8
 import jieba
 import pandas as pd
-import emoji
 import pinyin
 
 
 
 def create_cut(text):
     return " ".join(jieba.cut(text, cut_all=False))
-
-def write_html_jieba(text):
-    with open('templates/temp.html', 'w', encoding='utf-8') as temp_file:
-        with open('temp/temp2.html', 'r', encoding='utf-8') as old_html:
-                for i in old_html:
-                    temp_file.write(i)
-        for i in text:
-            if i in bible_light_raw:
-                for bl_r, bl_cx in zip(bible_light_raw, bible_light_cx):
-                    if bl_r == i:
-                        temp_file.write(emoji.emojize(':' + bl_cx + ':'))
-            else:
-                temp_file.write(i.strip())
-        temp_file.write('</body>')
-        temp_file.write('</html>')
-
-def write_html_pinyin(text):
-    with open('templates/temp.html', 'w', encoding='utf-8') as temp_file:
-        with open('temp/temp2.html', 'r', encoding='utf-8') as old_html:
-                for i in old_html:
-                    temp_file.write(i)
-        for word in text:
-            word = word.strip()
-            if word in bible_light_raw:
-                temp_file.write(emoji.emojize(':' + bible_light_dict[word] + ':'))
-            else:
-                if len(word) > 0: # if the two characters or more
-                    for character in word:
-                        if character in bible_light_dict.keys():
-                            temp_file.wrte(emoji.emojize(':' + bible_light_dict[character] + ':'))
-                            # now use pinyin
-                        else:
-                            character_py = pinyin.get(character, format="strip")
-                            if character_py in bible_deep_dict.keys():
-                                temp_file.write(emoji.emojize(':' + bible_deep_dict[character_py] + ':'))
-                            else:
-                                temp_file.write(character)
-                else: # only one character
-                    word_py = pinyin.get(word, format="strip")
-                    if word_py in bible_deep_dict.keys():
-                        temp_file.write(emoji.emojize(':' + bible_deep_dict[word_py] + ':'))
-                    else:
-                        temp_file.write(word.strip())
-        temp_file.write('</body>')
-        temp_file.write('</html>')
 
 
 def text_to_emoji(text, method=1):
