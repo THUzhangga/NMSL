@@ -78,3 +78,6 @@ for bl_r, bl_cx in zip(bible_light_raw, bible_light_cx):
     else:
         bl_r_py = bl_r
     bible_deep_dict[bl_r_py] = bl_cx
+
+if __name__ == '__main__':
+    print(text_to_emoji('我质疑宁妈死了'))
